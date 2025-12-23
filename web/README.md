@@ -44,6 +44,3 @@ TAGS=@TEST-001 npm run test:headless
 ## Reports
 
 We use Allure Report for test results. Reports are automatically generated and opened after running tests in headless mode.
-
-![Allure Report](https://qameta.io/wp-content/uploads/2020/10/allure-report-overview.png)
-
