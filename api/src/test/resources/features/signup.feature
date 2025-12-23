@@ -4,13 +4,16 @@ Feature: User signup in DemoBlaze API
     * def config = read('classpath:config.json')
     * url config.baseUrl
     * headers config.headers
+    * def endpoint = config.endpoints.signup
+    # Read the request body from the classpath
+    * def requestBody = read('classpath:request-bodies/signup-request.json')
 
   Scenario: Signup to Demoblaze
-    Given path config.endpoints.signup
+    Given path endpoint
     And def timestamp = java.lang.System.currentTimeMillis()
     And def username = 'testuser' + timestamp
-    And def userData = { username: '#(username)', password: 'cGFzc3dvcmQx' }
-    And request userData
+    And set requestBody.username = username
+    And request requestBody
     When method POST
     Then status 200
 
