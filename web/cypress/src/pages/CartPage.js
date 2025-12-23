@@ -1,19 +1,21 @@
+import { CartPageLocators } from '../locators/CartPage.locators.js';
+
 class CartPage {
   
   verifyCartPageLoaded() {
-    cy.get('#page-wrapper h2:contains("Products")').should('be.visible');
+    cy.get(CartPageLocators.PRODUCTS_HEADING).should('be.visible');
   }
   
   verifyProductInCart(productName) {
-    cy.get('#tbodyid tr td').contains(productName).should('be.visible');
+    cy.get(CartPageLocators.PRODUCT_IN_CART).contains(productName).should('be.visible');
   }
   
   verifyCartHasProductsCount(count) {
-    cy.get('#tbodyid tr').should('have.length', count);
+    cy.get(CartPageLocators.CART_ROWS).should('have.length', count);
   }
   
   clickPlaceOrder() {
-    cy.get('[data-target="#orderModal"]').contains('Place Order').click();
+    cy.get(CartPageLocators.PLACE_ORDER_BUTTON).contains('Place Order').click();
   }
   
 }
