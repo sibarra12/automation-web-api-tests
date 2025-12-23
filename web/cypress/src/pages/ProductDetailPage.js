@@ -1,7 +1,7 @@
 class ProductDetailPage {
   
   addToCart() {
-    cy.get('.col-sm-12 > .btn').click();
+    cy.get('.product-content a:contains("Add to cart")').click();
   }
   
 }
