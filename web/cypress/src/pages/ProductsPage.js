@@ -1,11 +1,13 @@
+import { ProductsPageLocators } from '../locators/ProductsPage.locators.js';
+
 class ProductsPage {
 
   selectProductByName(productName) {
-    cy.get('#tbodyid .card-block .card-title').contains(productName).click();
+    cy.get(ProductsPageLocators.PRODUCT_CARD_TITLE).contains(productName).click();
   }
   
   navigateToCart() {
-    cy.get('#navbarExample ul.navbar-nav li.nav-item :contains("Cart")').click();
+    cy.get(ProductsPageLocators.CART_LINK).click();
   }
   
 }
