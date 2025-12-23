@@ -22,7 +22,7 @@ Feature: User signup in DemoBlaze API
     And match response != { errorMessage: '#present' }
     And print 'User created successfully with username: ', username
 
-  @TEST-003 @Regression
+  @TEST-002 @Regression
   Scenario: Signup with existing user should fail
     # FIRST, CREATE A USER USING THE UTILITY FEATURE
     * call read('classpath:features/utils/create-user.feature')
