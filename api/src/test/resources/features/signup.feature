@@ -1,3 +1,4 @@
+@API @Signup @Regression
 Feature: User signup in DemoBlaze API
 
   Background:
@@ -5,9 +6,11 @@ Feature: User signup in DemoBlaze API
     * url config.baseUrl
     * headers config.headers
     * def endpoint = config.endpoints.signup
+    
     # Read the request body from the classpath
     * def requestBody = read('classpath:request-bodies/signup-request.json')
 
+  @TEST-001 @Smoke
   Scenario: Signup to Demoblaze
     Given path endpoint
     And def timestamp = java.lang.System.currentTimeMillis()
