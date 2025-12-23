@@ -10,3 +10,4 @@ Feature: Buy products in DemoBlaze
     And the user completes the purchase form
       | name       | country  | city   | card             | month | year |
       | Juan Pérez | Colombia | Bogotá | 1234567890123456 | 12    | 2025 |
+    Then the purchase is completed successfully with message "Thank you for your purchase!"
