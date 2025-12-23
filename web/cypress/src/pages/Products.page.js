@@ -3,11 +3,11 @@ import { ProductsPageLocators } from '../locators/ProductsPage.locators.js';
 class ProductsPage {
 
   selectProductByName(productName) {
-    cy.get(ProductsPageLocators.PRODUCT_CARD_TITLE).contains(productName).click();
+    cy.clickElementContains(ProductsPageLocators.PRODUCT_CARD_TITLE, productName);
   }
   
   navigateToCart() {
-    cy.get(ProductsPageLocators.CART_LINK).click();
+    cy.clickElement(ProductsPageLocators.CART_LINK);
   }
   
 }
