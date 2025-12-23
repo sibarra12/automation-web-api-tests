@@ -15,7 +15,7 @@ class CartPage {
   }
   
   clickPlaceOrder() {
-    cy.get(CartPageLocators.PLACE_ORDER_BUTTON).click();
+    cy.clickElement(CartPageLocators.PLACE_ORDER_BUTTON);
   }
   
 }

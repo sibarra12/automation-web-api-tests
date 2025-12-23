@@ -3,7 +3,7 @@ import { ProductDetailPageLocators } from '../locators/ProductDetailPage.locator
 class ProductDetailPage {
   
   addToCart() {
-    cy.get(ProductDetailPageLocators.ADD_TO_CART_BUTTON).click();
+    cy.clickElement(ProductDetailPageLocators.ADD_TO_CART_BUTTON);
   }
   
 }
