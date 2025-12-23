@@ -1,5 +1,9 @@
 # Web Automation Tests
 
+![Cypress](https://img.shields.io/badge/Cypress-17202C?style=for-the-badge&logo=cypress&logoColor=white)
+![Cucumber](https://img.shields.io/badge/Cucumber-23D96C?style=for-the-badge&logo=cucumber&logoColor=white)
+![Allure](https://img.shields.io/badge/Allure-FF6EC7?style=for-the-badge&logo=allure&logoColor=white)
+
 Automated tests with Cypress and Cucumber for DemoBlaze platform.
 
 ## Requirements
