@@ -6,7 +6,7 @@ public class TestRunner {
     
     @Karate.Test
     Karate testAll() {
-        return Karate.run("classpath:features/*.feature");
+        return Karate.run("classpath:features");
     }
 }
 
