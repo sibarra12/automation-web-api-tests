@@ -1,27 +1,29 @@
+import { PurchasePageLocators } from '../locators/PurchasePage.locators.js';
+
 class PurchasePage {
   
   fillName(name) {
-    cy.get('#name').type(name);
+    cy.get(PurchasePageLocators.NAME_INPUT).type(name);
   }
   
   fillCountry(country) {
-    cy.get('#country').type(country);
+    cy.get(PurchasePageLocators.COUNTRY_INPUT).type(country);
   }
   
   fillCity(city) {
-    cy.get('#city').type(city);
+    cy.get(PurchasePageLocators.CITY_INPUT).type(city);
   }
   
   fillCreditCard(card) {
-    cy.get('#card').type(card);
+    cy.get(PurchasePageLocators.CARD_INPUT).type(card);
   }
   
   fillMonth(month) {
-    cy.get('#month').type(month);
+    cy.get(PurchasePageLocators.MONTH_INPUT).type(month);
   }
   
   fillYear(year) {
-    cy.get('#year').type(year);
+    cy.get(PurchasePageLocators.YEAR_INPUT).type(year);
   }
   
   fillForm(formData) {
@@ -34,26 +36,26 @@ class PurchasePage {
   }
   
   clickPurchase() {
-    cy.get('button').contains('Purchase').click();
+    cy.get(PurchasePageLocators.PURCHASE_BUTTON).contains('Purchase').click();
   }
   
   verifyPurchaseModalIsVisible() {
-    cy.get('#orderModal').should('be.visible');
+    cy.get(PurchasePageLocators.ORDER_MODAL).should('be.visible');
   }
   
   verifyPurchaseCompleted(purchaseFormData) {
-    cy.get('.sweet-alert p').invoke('text').then((successInfo) => {
+    cy.get(PurchasePageLocators.SUCCESS_INFO_PARAGRAPH).invoke('text').then((successInfo) => {
       expect(successInfo).to.include(`Card Number: ${purchaseFormData.card}`);
       expect(successInfo).to.include(`Name: ${purchaseFormData.name}`);
     });
   }
   
   verifyPurchaseSuccessMessage(expectedMessage) {
-    cy.get('.showSweetAlert h2').should('contain', expectedMessage);
+    cy.get(PurchasePageLocators.SUCCESS_MESSAGE_HEADING).should('contain', expectedMessage);
   }
   
   clickOkButton() {
-    cy.get('button.confirm:contains("OK")').click();
+    cy.get(PurchasePageLocators.OK_BUTTON).click();
   }
   
 }
