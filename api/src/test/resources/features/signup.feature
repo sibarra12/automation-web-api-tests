@@ -25,14 +25,13 @@ Feature: User signup in DemoBlaze API
   @TEST-003 @Regression
   Scenario: Signup with existing user should fail
     # FIRST, CREATE A USER USING THE UTILITY FEATURE
-    * def createUserResult = call read('classpath:features/utils/create-user.feature')
-    * def existingUsername = createUserResult.createdUsername
+    * call read('classpath:features/utils/create-user.feature')
+    * def existingUserRequestBody = createdUserRequestBody
     
-    # NOW TRY TO CREATE THE SAME USER AGAIN
+    # NOW TRY TO CREATE THE SAME USER AGAIN USING THE SAME REQUESTBODY
     Given path endpoint
-    And set requestBody.username = existingUsername
-    And request requestBody
+    And request existingUserRequestBody
     When method POST
     Then status 200
     And match response.errorMessage == 'This user already exist.'
-    And print 'Expected error received for existing user: ', existingUsername
+    And print 'Expected error received for existing user: ', existingUserRequestBody.username
