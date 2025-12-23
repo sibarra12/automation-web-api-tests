@@ -45,3 +45,5 @@ TAGS=@TEST-001 npm run test:headless
 
 We use Allure Report for test results. Reports are automatically generated and opened after running tests in headless mode.
 
+![Allure Report](https://github.com/allure-framework/allure2/raw/master/.github/allure-report-example.png)
+
