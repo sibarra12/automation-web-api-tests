@@ -6,7 +6,10 @@ const { createEsbuildPlugin } = require("@badeball/cypress-cucumber-preprocessor
 module.exports = defineConfig({
   e2e: {
     specPattern: "cypress/tests/features/**/*.feature",
-    setupNodeEvents(on, config) {
+    async setupNodeEvents(on, config) {
+      const { allureCypress } = require('allure-cypress/reporter');
+      allureCypress(on, config);
+      
       const tags = process.env.TAGS || config.env.TAGS;
       if (tags) {
         config.cucumberPreprocessor = {
@@ -15,12 +18,13 @@ module.exports = defineConfig({
         };
       }
       
-      addCucumberPreprocessorPlugin(on, config);
+      await addCucumberPreprocessorPlugin(on, config);
       
       on("file:preprocessor", createBundler({
           plugins: [createEsbuildPlugin(config)],
         })
       );
+      
       return config;
     },
   },
