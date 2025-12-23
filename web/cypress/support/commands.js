@@ -34,4 +34,12 @@ Cypress.Commands.add('verifyAlertMessage', (expectedMessage) => {
   cy.get('@alertStub').should('have.been.calledWith', expectedMessage);
 });
 
+Cypress.Commands.add('clickElement', (locator) => {
+  cy.get(locator).should('exist').should('be.visible').click();
+});
+
+Cypress.Commands.add('clickElementContains', (locator, text) => {
+  cy.get(locator).contains(text).should('exist').should('be.visible').click();
+});
+
 
