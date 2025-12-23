@@ -18,6 +18,21 @@ class CartPage {
     cy.clickElement(CartPageLocators.PLACE_ORDER_BUTTON);
   }
   
+  verifyTotalIsSumOfProducts() {
+    let sum = 0;
+    
+    cy.get(CartPageLocators.PRODUCT_PRICE).each(($price) => {
+      const priceText = $price.text().trim();
+      const price = parseInt(priceText);
+      sum += price;
+    }).then(() => {
+      cy.get(CartPageLocators.TOTAL_PRICE).invoke('text').then((totalText) => {
+        const total = parseInt(totalText.trim());
+        expect(total).to.equal(sum);
+      });
+    });
+  }
+  
 }
 
 module.exports = new CartPage();
