@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "test": "cypress open",
+    "test:headless": "cypress run --browser chrome"
+  },
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^23.0.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
