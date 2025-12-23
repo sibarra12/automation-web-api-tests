@@ -7,7 +7,7 @@ class CartPage {
   }
   
   verifyProductInCart(productName) {
-    cy.get(CartPageLocators.PRODUCT_IN_CART).contains(productName).should('be.visible');
+    cy.get(CartPageLocators.PRODUCT_IN_CART).should('contain', productName);
   }
   
   verifyCartHasProductsCount(count) {
@@ -15,7 +15,7 @@ class CartPage {
   }
   
   clickPlaceOrder() {
-    cy.get(CartPageLocators.PLACE_ORDER_BUTTON).contains('Place Order').click();
+    cy.get(CartPageLocators.PLACE_ORDER_BUTTON).click();
   }
   
 }

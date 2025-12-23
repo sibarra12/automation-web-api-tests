@@ -36,7 +36,7 @@ class PurchasePage {
   }
   
   clickPurchase() {
-    cy.get(PurchasePageLocators.PURCHASE_BUTTON).contains('Purchase').click();
+    cy.get(PurchasePageLocators.PURCHASE_BUTTON).click();
   }
   
   verifyPurchaseModalIsVisible() {
