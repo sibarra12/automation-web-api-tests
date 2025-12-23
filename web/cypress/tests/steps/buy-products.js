@@ -2,6 +2,7 @@ const { Given, When } = require("@badeball/cypress-cucumber-preprocessor");
 const productsPage = require("../../src/pages/ProductsPage");
 const productDetailPage = require("../../src/pages/ProductDetailPage");
 const cartPage = require("../../src/pages/CartPage");
+const purchasePage = require("../../src/pages/PurchasePage");
 
 Given("the user enters the Demoblaze platform", () => {
   cy.visit("https://demoblaze.com");
@@ -30,4 +31,8 @@ When("the user views the cart with the products", () => {
       cartPage.verifyProductInCart(product.productName);
     });
   });
+});
+
+When("the user completes the purchase form", (dataTable) => {
+
 });
