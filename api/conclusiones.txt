@@ -1,0 +1,52 @@
+CONCLUSIONES - API AUTOMATION TESTS
+====================================
+
+HERRAMIENTA SELECCIONADA:
+-------------------------
+Para la automatización de API, seleccioné KarateDSL como framework principal.
+
+JUSTIFICACIÓN:
+--------------
+Los ejercicios requerían automatizar tanto web como API. Aunque mi opción preferida hubiera sido 
+usar Playwright, decidí optar por KarateDSL para no afectar el objetivo del examen. KarateDSL es 
+un framework preparado específicamente para automatización backend, y además cuento con experiencia 
+trabajando en esa herramienta.
+
+PATRONES Y PRÁCTICAS IMPLEMENTADAS:
+------------------------------------
+1. Data Driven Testing: Implementé pruebas basadas en datos mediante archivos JSON 
+   separados para los request bodies.
+
+2. Reutilización de Componentes: Creé features utilitarias reutilizables 
+   (create-user.feature) que pueden ser invocadas desde otros features mediante el uso de 
+   'call read()'.
+
+3. Uso de Tags: Implementé tags para una ejecución más estratégica de los tests 
+   (@Smoke, @Regression, @TEST-XXX), permitiendo ejecutar suites específicas según la necesidad.
+
+4. Centralización de Configuración: Centralicé todos los datos de configuración (URL base, headers, 
+   endpoints) en un archivo config.json, facilitando el mantenimiento 
+   y los cambios de ambiente.
+
+5. Estructura Organizada: Organicé el proyecto con una separación clara de responsabilidades:
+   - Features: Lógica de tests
+   - Request Bodies: Datos de requests
+   - Utils: Features utilitarias
+   - Config: Configuración centralizada
+
+REPORTES:
+---------
+Karate cuenta con un reporte propio integrado que genera reportes HTML automáticamente después 
+de cada ejecución. Decidí utilizar este reporte nativo ya que proporciona información 
+detallada y visual de los resultados de las pruebas.
+
+RESULTADOS:
+-----------
+Implementé exitosamente todos los casos de prueba requeridos:
+- Crear un nuevo usuario al registrarse
+- Intentar crear un usuario ya existente
+- Login con username y password correctos
+- Login con username y password incorrectos
+
+Todos los tests están funcionando correctamente y generan reportes detallados de su ejecución.
+

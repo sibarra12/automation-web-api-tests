@@ -1,0 +1,12 @@
+{
+  "baseUrl": "https://api.demoblaze.com",
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "*/*"
+  },
+  "endpoints": {
+    "signup": "signup",
+    "login": "login"
+  }
+}
+

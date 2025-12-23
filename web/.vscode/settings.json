@@ -1,0 +1,12 @@
+{
+    "cucumberautocomplete.steps": [
+      "cypress/tests/steps/**/*.js"
+    ],
+    "cucumberautocomplete.syncfeatures": "cypress/tests/features/**/*.feature",
+    "cucumberautocomplete.strictGherkinCompletion": false,
+    "files.associations": {
+      "*.feature": "feature"
+    }
+  }
+  
+  
