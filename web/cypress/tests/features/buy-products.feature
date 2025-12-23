@@ -1,5 +1,7 @@
+@Regression @BuyProducts
 Feature: Buy products in DemoBlaze
 
+  @TEST-001 @Smoke
   Scenario: Buy a product in DemoBlaze
     Given the user enters the Demoblaze platform
     When the user adds products to the cart
