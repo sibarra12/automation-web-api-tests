@@ -35,5 +35,9 @@ When("the user views the cart with the products", () => {
 
 When("the user completes the purchase form", (dataTable) => {
   cartPage.clickPlaceOrder();
-
+  purchasePage.verifyPurchaseModalIsVisible();
+  
+  const formData = dataTable.hashes()[0];
+  purchasePage.fillForm(formData);
+  purchasePage.clickPurchase();
 });
