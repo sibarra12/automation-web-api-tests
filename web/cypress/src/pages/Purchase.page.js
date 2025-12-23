@@ -3,27 +3,27 @@ import { PurchasePageLocators } from '../locators/PurchasePage.locators.js';
 class PurchasePage {
   
   fillName(name) {
-    cy.get(PurchasePageLocators.NAME_INPUT).type(name);
+    cy.typeElement(PurchasePageLocators.NAME_INPUT, name);
   }
   
   fillCountry(country) {
-    cy.get(PurchasePageLocators.COUNTRY_INPUT).type(country);
+    cy.typeElement(PurchasePageLocators.COUNTRY_INPUT, country);
   }
   
   fillCity(city) {
-    cy.get(PurchasePageLocators.CITY_INPUT).type(city);
+    cy.typeElement(PurchasePageLocators.CITY_INPUT, city);
   }
   
   fillCreditCard(card) {
-    cy.get(PurchasePageLocators.CARD_INPUT).type(card);
+    cy.typeElement(PurchasePageLocators.CARD_INPUT, card);
   }
   
   fillMonth(month) {
-    cy.get(PurchasePageLocators.MONTH_INPUT).type(month);
+    cy.typeElement(PurchasePageLocators.MONTH_INPUT, month);
   }
   
   fillYear(year) {
-    cy.get(PurchasePageLocators.YEAR_INPUT).type(year);
+    cy.typeElement(PurchasePageLocators.YEAR_INPUT, year);
   }
   
   fillForm(formData) {
@@ -36,7 +36,7 @@ class PurchasePage {
   }
   
   clickPurchase() {
-    cy.get(PurchasePageLocators.PURCHASE_BUTTON).click();
+    cy.clickElement(PurchasePageLocators.PURCHASE_BUTTON);
   }
   
   verifyPurchaseModalIsVisible() {
@@ -55,7 +55,7 @@ class PurchasePage {
   }
   
   clickOkButton() {
-    cy.get(PurchasePageLocators.OK_BUTTON).click();
+    cy.clickElement(PurchasePageLocators.OK_BUTTON);
   }
   
 }
