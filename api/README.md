@@ -26,7 +26,7 @@ mvn test
 
 To run tests with a specific tag:
 ```bash
-mvn test -Dkarate.options="--tags @Smoke"
+mvn test -Dtags="@Regression"
 ```
 
 To run a specific feature:
