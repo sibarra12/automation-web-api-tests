@@ -15,4 +15,10 @@ module.exports = defineConfig({
       return config;
     },
   },
+  cucumberPreprocessor: {
+    stepDefinitions: [
+      "cypress/tests/steps/**/*.js",
+      "cypress/tests/steps/**/*.ts"
+    ]
+  }
 });

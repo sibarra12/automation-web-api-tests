@@ -5,6 +5,9 @@
     "cypress": "^14.5.4"
   },
   "cypress-cucumber-preprocessor": {
-    "stepDefinitions": "cypress/tests/steps/**/*.{js,ts}"
+    "stepDefinitions": [
+      "cypress/tests/steps/**/*.js",
+      "cypress/tests/steps/**/*.ts"
+    ]
   }
 }
