@@ -30,6 +30,7 @@ When("the user views the cart with the products", () => {
     products.forEach((product) => {
       cartPage.verifyProductInCart(product.productName);
     });
+    cartPage.verifyTotalIsSumOfProducts();
   });
 });
 
