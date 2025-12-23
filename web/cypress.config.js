@@ -7,7 +7,16 @@ module.exports = defineConfig({
   e2e: {
     specPattern: "cypress/tests/features/**/*.feature",
     setupNodeEvents(on, config) {
+      const tags = process.env.TAGS || config.env.TAGS;
+      if (tags) {
+        config.cucumberPreprocessor = {
+          ...config.cucumberPreprocessor,
+          tags: tags
+        };
+      }
+      
       addCucumberPreprocessorPlugin(on, config);
+      
       on("file:preprocessor", createBundler({
           plugins: [createEsbuildPlugin(config)],
         })
