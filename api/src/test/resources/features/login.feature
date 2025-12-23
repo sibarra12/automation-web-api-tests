@@ -2,7 +2,7 @@
 Feature: Login to Demoblaze
 
   Background:
-    * def config = read('../../../../config.json')
+    * def config = read('classpath:config.json')
     * url config.baseUrl
     * headers config.headers
     * def loginRequestBody = read('classpath:request-bodies/login-request.json')
