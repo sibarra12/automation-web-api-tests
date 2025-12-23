@@ -6,3 +6,4 @@ Feature: Buy products in DemoBlaze
       | productName        |
       | Samsung galaxy s6  |
       | Nokia lumia 1520   |
+    And the user views the cart with the products
