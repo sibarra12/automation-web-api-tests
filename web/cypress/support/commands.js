@@ -43,7 +43,7 @@ Cypress.Commands.add('clickElementContains', (locator, text) => {
 });
 
 Cypress.Commands.add('typeElement', (locator, text) => {
-  cy.get(locator).should('exist').should('be.visible').type(text);
+  cy.get(locator).should('exist').should('be.visible').type(text).should('have.value', text);
 });
 
 
