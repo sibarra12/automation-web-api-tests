@@ -1,7 +1,9 @@
+import { ProductDetailPageLocators } from '../locators/ProductDetailPage.locators.js';
+
 class ProductDetailPage {
   
   addToCart() {
-    cy.get('.product-content a:contains("Add to cart")').click();
+    cy.get(ProductDetailPageLocators.ADD_TO_CART_BUTTON).click();
   }
   
 }
