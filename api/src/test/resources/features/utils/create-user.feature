@@ -2,7 +2,7 @@
 Feature: Utility to create a user in DemoBlaze API
 
   Background:
-    * def config = read('classpath:config.json')
+    * def config = read('../../../../../config.json')
     * url config.baseUrl
     * headers config.headers
     * def endpoint = config.endpoints.signup
