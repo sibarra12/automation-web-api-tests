@@ -24,4 +24,14 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+Cypress.Commands.add('setupAlertHandler', () => {
+  cy.window().then((win) => {
+    cy.stub(win, 'alert').as('alertStub');
+  });
+});
+
+Cypress.Commands.add('verifyAlertMessage', (expectedMessage) => {
+  cy.get('@alertStub').should('have.been.calledWith', expectedMessage);
+});
+
 
