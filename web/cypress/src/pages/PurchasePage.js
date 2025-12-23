@@ -41,6 +41,21 @@ class PurchasePage {
     cy.get('#orderModal').should('be.visible');
   }
   
+  verifyPurchaseCompleted(purchaseFormData) {
+    cy.get('.sweet-alert p').invoke('text').then((successInfo) => {
+      expect(successInfo).to.include(`Card Number: ${purchaseFormData.card}`);
+      expect(successInfo).to.include(`Name: ${purchaseFormData.name}`);
+    });
+  }
+  
+  verifyPurchaseSuccessMessage(expectedMessage) {
+    cy.get('.showSweetAlert h2').should('contain', expectedMessage);
+  }
+  
+  clickOkButton() {
+    cy.get('button.confirm:contains("OK")').click();
+  }
+  
 }
 
 module.exports = new PurchasePage();
