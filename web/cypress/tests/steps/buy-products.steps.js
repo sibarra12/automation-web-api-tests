@@ -1,8 +1,8 @@
 const { Given, When, Then } = require("@badeball/cypress-cucumber-preprocessor");
-const productsPage = require("../../src/pages/ProductsPage");
-const productDetailPage = require("../../src/pages/ProductDetailPage");
-const cartPage = require("../../src/pages/CartPage");
-const purchasePage = require("../../src/pages/PurchasePage");
+const productsPage = require("../../src/pages/Products.page");
+const productDetailPage = require("../../src/pages/ProductDetail.page");
+const cartPage = require("../../src/pages/Cart.page");
+const purchasePage = require("../../src/pages/Purchase.page");
 
 Given("the user enters the Demoblaze platform", () => {
   cy.visit("https://demoblaze.com");
