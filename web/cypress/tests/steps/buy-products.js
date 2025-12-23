@@ -1,4 +1,4 @@
-const { Given, When } = require("@badeball/cypress-cucumber-preprocessor");
+const { Given, When, Then } = require("@badeball/cypress-cucumber-preprocessor");
 const productsPage = require("../../src/pages/ProductsPage");
 const productDetailPage = require("../../src/pages/ProductDetailPage");
 const cartPage = require("../../src/pages/CartPage");
@@ -38,6 +38,17 @@ When("the user completes the purchase form", (dataTable) => {
   purchasePage.verifyPurchaseModalIsVisible();
   
   const formData = dataTable.hashes()[0];
+  cy.wrap(formData).as('purchaseFormData');
   purchasePage.fillForm(formData);
   purchasePage.clickPurchase();
+});
+
+Then("the purchase is completed successfully with message {string}", (expectedMessage) => {
+  purchasePage.verifyPurchaseSuccessMessage(expectedMessage);
+  
+  cy.get('@purchaseFormData').then((formData) => {
+    purchasePage.verifyPurchaseCompleted(formData);
+  });
+  
+  purchasePage.clickOkButton();
 });
