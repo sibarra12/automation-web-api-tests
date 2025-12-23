@@ -17,5 +17,6 @@ Feature: Utility to create a user in DemoBlaze API
     When method POST
     Then status 200
     And def createdUsername = username
+    And def createdUserRequestBody = requestBody
     And print 'User created successfully with username: ', createdUsername
 
