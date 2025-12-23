@@ -1,0 +1,51 @@
+CONCLUSIONES - WEB AUTOMATION TESTS
+====================================
+
+HERRAMIENTA SELECCIONADA:
+-------------------------
+Para la automatización web, seleccioné Cypress como framework principal.
+
+JUSTIFICACIÓN:
+--------------
+Como mencioné anteriormente, hubiese preferido usar Playwright, pero opté por Cypress ya que es 
+un framework actual que tiene una buena performance al momento de ejecutar los tests y además 
+es muy bueno para el debug. Cypress ofrece una excelente experiencia de desarrollo con su 
+interfaz interactiva y capacidades de debugging integradas.
+
+PATRONES Y PRÁCTICAS IMPLEMENTADAS:
+------------------------------------
+1. Page Object Model (POM): Implementé el patrón POM para mantener una separación clara 
+   entre la lógica de los tests y los elementos de la página. Esto facilita el mantenimiento 
+   y la reutilización del código.
+
+2. Cucumber: Utilicé Cucumber para definir los escenarios en lenguaje Gherkin, lo que 
+   permite una mejor comunicación entre los miembros del equipo y facilita la comprensión 
+   de los casos de prueba por parte de stakeholders no técnicos.
+
+3. Allure Report: Como herramienta de reportería utilicé Allure Report, que proporciona 
+   reportes detallados y visuales de la ejecución de los tests, incluyendo capturas de 
+   pantalla, logs y métricas de rendimiento.
+
+VENTAJAS DE CYPRESS:
+--------------------
+- Excelente performance en la ejecución de tests
+- Interfaz interactiva para debugging
+- Time-travel debugging que permite ver el estado de la aplicación en cada paso
+- Ejecución en tiempo real con hot-reload
+- API intuitiva y fácil de usar
+- Buen soporte para async/await y promesas
+
+ESTRUCTURA DEL PROYECTO:
+------------------------
+Organicé el proyecto siguiendo las mejores prácticas:
+- Separación de features (escenarios Cucumber)
+- Step definitions para mapear los pasos de Gherkin
+- Page Objects para encapsular la interacción con las páginas
+- Locators centralizados para facilitar el mantenimiento
+
+RESULTADOS:
+-----------
+La implementación con Cypress, Cucumber y Allure Report resultó en una suite de pruebas 
+robusta, mantenible y fácil de entender. Los reportes generados proporcionan información 
+detallada que facilita la identificación y resolución de problemas.
+
