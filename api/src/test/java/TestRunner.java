@@ -1,5 +1,3 @@
-package demoblaze.api;
-
 import com.intuit.karate.junit5.Karate;
 
 public class TestRunner {
