@@ -13,10 +13,19 @@
   const clearAllBtn = document.getElementById('clearAllBtn');
   const syncNote = document.getElementById('syncNote');
 
+  const calendarLabel = document.getElementById('calendarLabel');
+  const calendarGrid = document.getElementById('calendarGrid');
+  const dayDetail = document.getElementById('dayDetail');
+  const prevMonthBtn = document.getElementById('prevMonthBtn');
+  const nextMonthBtn = document.getElementById('nextMonthBtn');
+  const todayBtn = document.getElementById('todayBtn');
+
   const tabButtons = document.querySelectorAll('.tab-btn');
   const tabPanels = document.querySelectorAll('.tab-panel');
 
   let currentClients = [];
+  let calendarDate = new Date();
+  let selectedDay = null;
 
   tabButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -25,6 +34,7 @@
       btn.classList.add('active');
       document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
       if (btn.dataset.tab === 'list') renderTable();
+      if (btn.dataset.tab === 'calendar') renderCalendar();
     });
   });
 
@@ -202,6 +212,104 @@
         tableBody.appendChild(tr);
       });
   }
+
+  function pad2(n) {
+    return String(n).padStart(2, '0');
+  }
+
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  async function renderCalendar() {
+    currentClients = await loadClients();
+
+    const year = calendarDate.getFullYear();
+    const month = calendarDate.getMonth();
+    calendarLabel.textContent = capitalize(calendarDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }));
+
+    const turnosByDay = {};
+    currentClients.forEach((c) => {
+      if (!c.fechaTurno) return;
+      const key = String(c.fechaTurno).slice(0, 10);
+      (turnosByDay[key] = turnosByDay[key] || []).push(c);
+    });
+
+    const firstWeekday = new Date(year, month, 1).getDay();
+    const totalDays = new Date(year, month + 1, 0).getDate();
+    const todayStr = new Date().toISOString().slice(0, 10);
+
+    calendarGrid.innerHTML = '';
+
+    for (let i = 0; i < firstWeekday; i++) {
+      const blank = document.createElement('div');
+      blank.className = 'cal-cell cal-blank';
+      calendarGrid.appendChild(blank);
+    }
+
+    for (let day = 1; day <= totalDays; day++) {
+      const dateStr = `${year}-${pad2(month + 1)}-${pad2(day)}`;
+      const turnos = turnosByDay[dateStr] || [];
+
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell';
+      if (dateStr === todayStr) cell.classList.add('cal-today');
+      if (turnos.length) cell.classList.add('cal-has-turnos');
+      if (dateStr === selectedDay) cell.classList.add('cal-selected');
+      cell.innerHTML = `
+        <span class="cal-daynum">${day}</span>
+        ${turnos.length ? `<span class="cal-badge">${turnos.length}</span>` : ''}
+      `;
+      cell.addEventListener('click', () => {
+        selectedDay = dateStr;
+        renderCalendar();
+      });
+      calendarGrid.appendChild(cell);
+    }
+
+    renderDayDetail(selectedDay, selectedDay ? (turnosByDay[selectedDay] || []) : []);
+  }
+
+  function renderDayDetail(dateStr, turnos) {
+    if (!dateStr) {
+      dayDetail.innerHTML = '<p class="empty-msg">Hacé clic en un día para ver los turnos agendados.</p>';
+      return;
+    }
+    const label = capitalize(new Date(`${dateStr}T00:00:00`).toLocaleDateString('es-AR', {
+      weekday: 'long', day: 'numeric', month: 'long',
+    }));
+    if (turnos.length === 0) {
+      dayDetail.innerHTML = `<h3>${label}</h3><p class="empty-msg">No hay turnos agendados este día.</p>`;
+      return;
+    }
+    dayDetail.innerHTML = `
+      <h3>${label} · ${turnos.length} turno${turnos.length > 1 ? 's' : ''}</h3>
+      <ul class="day-turnos-list">
+        ${turnos.map((c) => `
+          <li>
+            <strong>${escapeHtml(c.nombre)}</strong> — ${escapeHtml(c.tratamiento)}<br>
+            <span class="muted">${escapeHtml(c.telefono)}</span>
+          </li>
+        `).join('')}
+      </ul>
+    `;
+  }
+
+  prevMonthBtn.addEventListener('click', () => {
+    calendarDate.setMonth(calendarDate.getMonth() - 1);
+    renderCalendar();
+  });
+
+  nextMonthBtn.addEventListener('click', () => {
+    calendarDate.setMonth(calendarDate.getMonth() + 1);
+    renderCalendar();
+  });
+
+  todayBtn.addEventListener('click', () => {
+    calendarDate = new Date();
+    selectedDay = new Date().toISOString().slice(0, 10);
+    renderCalendar();
+  });
 
   tableBody.addEventListener('click', async (e) => {
     const btn = e.target.closest('.row-delete');
