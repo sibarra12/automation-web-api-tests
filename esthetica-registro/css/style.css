@@ -226,6 +226,135 @@ tbody tr:hover { background: var(--rose-50); }
   margin-top: 14px;
 }
 
+.calendar-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px rgba(211,71,122,0.06);
+  margin-bottom: 20px;
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.calendar-label {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--rose-700);
+  min-width: 180px;
+  text-align: center;
+}
+
+.cal-nav-btn {
+  padding: 8px 16px;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.cal-today-btn { padding: 8px 16px; font-size: 0.85rem; }
+
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cal-cell {
+  position: relative;
+  min-height: 58px;
+  border-radius: 10px;
+  background: var(--rose-50);
+  padding: 6px 4px;
+  cursor: pointer;
+  transition: background .15s, outline-color .15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+}
+.cal-cell:hover { background: var(--rose-100); }
+
+.cal-blank {
+  background: transparent;
+  cursor: default;
+}
+
+.cal-daynum {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.cal-today .cal-daynum {
+  background: var(--rose-500);
+  color: #fff;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cal-badge {
+  background: var(--gold);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 999px;
+}
+
+.cal-has-turnos { box-shadow: inset 0 0 0 1.5px var(--rose-300); }
+
+.cal-selected { outline: 2px solid var(--rose-600); background: var(--rose-100); }
+
+.day-detail h3 {
+  margin-top: 0;
+  color: var(--rose-700);
+  font-size: 1.05rem;
+}
+
+.day-turnos-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.day-turnos-list li {
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+  font-size: 0.92rem;
+}
+.day-turnos-list li:first-child { border-top: none; }
+
+.muted { color: var(--ink-soft); font-size: 0.85rem; }
+
+@media (max-width: 640px) {
+  .cal-cell { min-height: 44px; }
+  .cal-daynum { font-size: 0.78rem; }
+  .calendar-label { min-width: 0; font-size: 1.05rem; }
+}
+
 .footer {
   text-align: center;
   padding: 24px;
