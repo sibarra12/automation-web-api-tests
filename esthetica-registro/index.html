@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Bella Piel Estética · Registro de Clientas</title>
-<meta name="description" content="Formulario de registro de clientas para centro de estética" />
+<title>Bella Piel Estética · Ficha de Cejas y Pestañas</title>
+<meta name="description" content="Ficha técnica de clientas para cejas y extensiones de pestañas" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💅</text></svg>" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,13 +29,13 @@
 
   <section id="tab-form" class="tab-panel active">
     <div class="hero">
-      <h1>Registro de Clientas</h1>
-      <p>Completá tus datos para agendar tu tratamiento. Nos ponemos en contacto para confirmar el turno.</p>
+      <h1>Ficha Técnica · Cejas y Pestañas</h1>
+      <p>Completá los datos del turno y el diseño a realizar.</p>
     </div>
 
     <form id="registroForm" class="card" novalidate>
 
-      <div class="section-title">Datos personales</div>
+      <div class="section-title">Datos del turno</div>
       <div class="grid">
         <div class="field">
           <label for="nombre">Nombre completo *</label>
@@ -43,86 +43,173 @@
           <span class="error" data-for="nombre"></span>
         </div>
         <div class="field">
-          <label for="telefono">Teléfono *</label>
+          <label for="telefono">Teléfono / Contacto *</label>
           <input type="tel" id="telefono" name="telefono" required placeholder="Ej: 11 2345 6789" />
           <span class="error" data-for="telefono"></span>
         </div>
         <div class="field">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="tu@email.com" />
-          <span class="error" data-for="email"></span>
-        </div>
-        <div class="field">
-          <label for="nacimiento">Fecha de nacimiento</label>
-          <input type="date" id="nacimiento" name="nacimiento" />
-        </div>
-        <div class="field full">
-          <label for="direccion">Dirección</label>
-          <input type="text" id="direccion" name="direccion" placeholder="Calle, número, ciudad" />
-        </div>
-      </div>
-
-      <div class="section-title">Perfil dermatológico</div>
-      <div class="grid">
-        <div class="field">
-          <label for="tipoPiel">Tipo de piel</label>
-          <select id="tipoPiel" name="tipoPiel">
-            <option value="">Seleccionar…</option>
-            <option>Normal</option>
-            <option>Seca</option>
-            <option>Grasa</option>
-            <option>Mixta</option>
-            <option>Sensible</option>
-            <option>No lo sé</option>
-          </select>
-        </div>
-        <div class="field full">
-          <label for="alergias">Alergias / condiciones a informar</label>
-          <textarea id="alergias" name="alergias" rows="2" placeholder="Ej: alergia a látex, piel con rosácea, embarazo, etc."></textarea>
-        </div>
-      </div>
-
-      <div class="section-title">Tratamiento</div>
-      <div class="grid">
-        <div class="field">
-          <label for="tratamiento">Tratamiento de interés *</label>
-          <select id="tratamiento" name="tratamiento" required>
-            <option value="">Seleccionar…</option>
-            <option>Limpieza facial</option>
-            <option>Depilación</option>
-            <option>Manicura / Pedicura</option>
-            <option>Masajes</option>
-            <option>Maquillaje</option>
-            <option>Micropigmentación</option>
-            <option>Otro</option>
-          </select>
-          <span class="error" data-for="tratamiento"></span>
-        </div>
-        <div class="field">
-          <label for="fechaTurno">Fecha preferida de turno</label>
+          <label for="fechaTurno">Fecha del turno</label>
           <input type="date" id="fechaTurno" name="fechaTurno" />
         </div>
-        <div class="field full">
-          <label for="conocio">¿Cómo nos conociste?</label>
-          <select id="conocio" name="conocio">
+        <div class="field">
+          <label for="hora">Hora</label>
+          <input type="time" id="hora" name="hora" />
+        </div>
+        <div class="field">
+          <label for="sede">Sede</label>
+          <input type="text" id="sede" name="sede" placeholder="Ej: Local centro" />
+        </div>
+        <div class="field">
+          <label for="anticipo">Anticipo</label>
+          <input type="number" id="anticipo" name="anticipo" min="0" step="0.01" placeholder="$" />
+        </div>
+        <div class="field">
+          <label for="precio">Precio</label>
+          <input type="number" id="precio" name="precio" min="0" step="0.01" placeholder="$" />
+        </div>
+        <div class="field">
+          <label for="precioRetoque">Precio de retoque</label>
+          <input type="number" id="precioRetoque" name="precioRetoque" min="0" step="0.01" placeholder="$" />
+        </div>
+      </div>
+
+      <div class="section-title">Servicio</div>
+      <div class="grid">
+        <div class="field">
+          <label for="servicio">Servicio *</label>
+          <select id="servicio" name="servicio" required>
             <option value="">Seleccionar…</option>
-            <option>Instagram</option>
-            <option>Facebook</option>
-            <option>Recomendación</option>
-            <option>Google</option>
-            <option>Pasé por el local</option>
+            <option>Pestañas</option>
+            <option>Cejas</option>
+            <option>Cejas y pestañas</option>
+          </select>
+          <span class="error" data-for="servicio"></span>
+        </div>
+        <div class="field">
+          <label for="disenoCejas">Diseño de cejas</label>
+          <select id="disenoCejas" name="disenoCejas">
+            <option value="">Seleccionar…</option>
+            <option>Diseño con pinza</option>
+            <option>Laminado</option>
+            <option>Microblading</option>
+            <option>Henna</option>
+            <option>Tinte</option>
             <option>Otro</option>
           </select>
+        </div>
+      </div>
+
+      <div class="section-title">Pestañas · Detalle técnico</div>
+      <div class="grid">
+        <div class="field">
+          <label for="grosor">Grosor</label>
+          <select id="grosor" name="grosor">
+            <option value="">Seleccionar…</option>
+            <option>.03</option>
+            <option>.05</option>
+            <option>.07</option>
+            <option>.10</option>
+            <option>.15</option>
+            <option>.20</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="curvatura">Curvatura</label>
+          <select id="curvatura" name="curvatura">
+            <option value="">Seleccionar…</option>
+            <option>B</option>
+            <option>C</option>
+            <option>CC</option>
+            <option>D</option>
+            <option>DD</option>
+            <option>L</option>
+            <option>LC</option>
+            <option>M</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="tecnica">Técnica / Efecto</label>
+          <select id="tecnica" name="tecnica">
+            <option value="">Seleccionar…</option>
+            <option>Clásica</option>
+            <option>Híbrida</option>
+            <option>Volumen</option>
+            <option>Mega Volumen</option>
+            <option>Volumen Griego</option>
+            <option>Wispy</option>
+            <option>Rímel</option>
+            <option>Hawaianas</option>
+            <option>Egipcias</option>
+            <option>Foxy Eyes</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="longInterior">Longitud interior</label>
+          <select id="longInterior" name="longInterior">
+            <option value="">—</option>
+            <option>7mm</option><option>8mm</option><option>9mm</option><option>10mm</option>
+            <option>11mm</option><option>12mm</option><option>13mm</option><option>14mm</option><option>15mm</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="longCentro">Longitud centro</label>
+          <select id="longCentro" name="longCentro">
+            <option value="">—</option>
+            <option>7mm</option><option>8mm</option><option>9mm</option><option>10mm</option>
+            <option>11mm</option><option>12mm</option><option>13mm</option><option>14mm</option><option>15mm</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="longExterior">Longitud exterior</label>
+          <select id="longExterior" name="longExterior">
+            <option value="">—</option>
+            <option>7mm</option><option>8mm</option><option>9mm</option><option>10mm</option>
+            <option>11mm</option><option>12mm</option><option>13mm</option><option>14mm</option><option>15mm</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-title">Ojos y diseño</div>
+      <div class="grid">
+        <div class="field">
+          <label for="formaOjos">Forma de ojos</label>
+          <select id="formaOjos" name="formaOjos">
+            <option value="">Seleccionar…</option>
+            <option>Redondo</option>
+            <option>Ovalado</option>
+            <option>Asiático</option>
+            <option>Hundido</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="alergias">Alergias</label>
+          <select id="alergias" name="alergias">
+            <option value="">Seleccionar…</option>
+            <option>No</option>
+            <option>Sí</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="alergiasDetalle">Detalle de alergias (si aplica)</label>
+          <input type="text" id="alergiasDetalle" name="alergiasDetalle" placeholder="Ej: alergia al adhesivo/látex" />
+        </div>
+        <div class="field full">
+          <label for="disenoNotas">Mapping / diseño a realizar</label>
+          <textarea id="disenoNotas" name="disenoNotas" rows="2" placeholder="Ej: ojo izquierdo más caído, reforzar exterior; distinto mapping por ojo, etc."></textarea>
+        </div>
+        <div class="field full">
+          <label for="nota">Nota</label>
+          <textarea id="nota" name="nota" rows="2"></textarea>
         </div>
       </div>
 
       <label class="consent">
         <input type="checkbox" id="consentimiento" name="consentimiento" required />
-        Autorizo el uso de mis datos para gestionar mi turno y contactarme sobre este tratamiento. *
+        Autorizo el uso de mis datos para gestionar mi turno y contactarme sobre este servicio. *
         <span class="error" data-for="consentimiento"></span>
       </label>
 
-      <button type="submit" class="btn-primary">Registrarme</button>
+      <button type="submit" class="btn-primary">Guardar ficha</button>
       <p id="formMsg" class="form-msg" role="status"></p>
     </form>
   </section>
@@ -142,8 +229,8 @@
           <tr>
             <th>Nombre</th>
             <th>Teléfono</th>
-            <th>Email</th>
-            <th>Tratamiento</th>
+            <th>Servicio</th>
+            <th>Técnica</th>
             <th>Fecha turno</th>
             <th>Registrada</th>
             <th></th>
@@ -181,7 +268,7 @@
 </main>
 
 <footer class="footer">
-  <p>Bella Piel Estética — Formulario de registro · Hecho con 💗</p>
+  <p>Bella Piel Estética — Ficha de cejas y pestañas · Hecho con 💗</p>
 </footer>
 
 <script src="js/config.js"></script>
