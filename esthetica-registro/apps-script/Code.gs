@@ -12,8 +12,10 @@
 
 const SHEET_NAME = 'Clientas';
 const HEADERS = [
-  'id', 'registradaEl', 'nombre', 'telefono', 'email', 'nacimiento',
-  'direccion', 'tipoPiel', 'alergias', 'tratamiento', 'fechaTurno', 'conocio',
+  'id', 'registradaEl', 'nombre', 'telefono', 'fechaTurno', 'hora', 'sede',
+  'anticipo', 'precio', 'precioRetoque', 'servicio', 'disenoCejas',
+  'grosor', 'curvatura', 'tecnica', 'longInterior', 'longCentro', 'longExterior',
+  'formaOjos', 'alergias', 'alergiasDetalle', 'disenoNotas', 'nota',
 ];
 
 function getSheet_() {

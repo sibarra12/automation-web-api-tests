@@ -91,12 +91,8 @@
       setError('telefono', 'Ingresá un teléfono de contacto.');
       valid = false;
     }
-    if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-      setError('email', 'Ingresá un email válido.');
-      valid = false;
-    }
-    if (!data.tratamiento) {
-      setError('tratamiento', 'Seleccioná un tratamiento.');
+    if (!data.servicio) {
+      setError('servicio', 'Seleccioná un servicio.');
       valid = false;
     }
     if (!data.consentimiento) {
@@ -117,14 +113,25 @@
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
       nombre: fd.get('nombre').trim(),
       telefono: fd.get('telefono').trim(),
-      email: fd.get('email').trim(),
-      nacimiento: fd.get('nacimiento'),
-      direccion: fd.get('direccion').trim(),
-      tipoPiel: fd.get('tipoPiel'),
-      alergias: fd.get('alergias').trim(),
-      tratamiento: fd.get('tratamiento'),
       fechaTurno: fd.get('fechaTurno'),
-      conocio: fd.get('conocio'),
+      hora: fd.get('hora'),
+      sede: fd.get('sede').trim(),
+      anticipo: fd.get('anticipo'),
+      precio: fd.get('precio'),
+      precioRetoque: fd.get('precioRetoque'),
+      servicio: fd.get('servicio'),
+      disenoCejas: fd.get('disenoCejas'),
+      grosor: fd.get('grosor'),
+      curvatura: fd.get('curvatura'),
+      tecnica: fd.get('tecnica'),
+      longInterior: fd.get('longInterior'),
+      longCentro: fd.get('longCentro'),
+      longExterior: fd.get('longExterior'),
+      formaOjos: fd.get('formaOjos'),
+      alergias: fd.get('alergias'),
+      alergiasDetalle: fd.get('alergiasDetalle').trim(),
+      disenoNotas: fd.get('disenoNotas').trim(),
+      nota: fd.get('nota').trim(),
       consentimiento: fd.get('consentimiento') === 'on',
       registradaEl: new Date().toISOString(),
     };
@@ -203,8 +210,8 @@
         tr.innerHTML = `
           <td>${escapeHtml(c.nombre)}</td>
           <td>${escapeHtml(c.telefono)}</td>
-          <td>${escapeHtml(c.email) || '—'}</td>
-          <td>${escapeHtml(c.tratamiento)}</td>
+          <td>${escapeHtml(c.servicio) || '—'}</td>
+          <td>${escapeHtml(c.tecnica) || '—'}</td>
           <td>${escapeHtml(c.fechaTurno) || '—'}</td>
           <td>${registrada}</td>
           <td><button class="row-delete" title="Eliminar" data-id="${c.id}">🗑️</button></td>
@@ -287,7 +294,7 @@
       <ul class="day-turnos-list">
         ${turnos.map((c) => `
           <li>
-            <strong>${escapeHtml(c.nombre)}</strong> — ${escapeHtml(c.tratamiento)}<br>
+            <strong>${escapeHtml(c.nombre)}</strong> — ${escapeHtml(c.servicio)}${c.tecnica ? ` (${escapeHtml(c.tecnica)})` : ''}<br>
             <span class="muted">${escapeHtml(c.telefono)}</span>
           </li>
         `).join('')}
@@ -350,10 +357,17 @@
       alert('No hay clientas registradas para exportar.');
       return;
     }
-    const headers = ['Nombre', 'Telefono', 'Email', 'Nacimiento', 'Direccion', 'TipoPiel', 'Alergias', 'Tratamiento', 'FechaTurno', 'ComoConocio', 'Registrada'];
+    const headers = [
+      'Nombre', 'Telefono', 'FechaTurno', 'Hora', 'Sede', 'Anticipo', 'Precio', 'PrecioRetoque',
+      'Servicio', 'DisenoCejas', 'Grosor', 'Curvatura', 'Tecnica',
+      'LongInterior', 'LongCentro', 'LongExterior', 'FormaOjos',
+      'Alergias', 'AlergiasDetalle', 'DisenoNotas', 'Nota', 'Registrada',
+    ];
     const rows = currentClients.map((c) => [
-      c.nombre, c.telefono, c.email, c.nacimiento, c.direccion,
-      c.tipoPiel, c.alergias, c.tratamiento, c.fechaTurno, c.conocio, c.registradaEl,
+      c.nombre, c.telefono, c.fechaTurno, c.hora, c.sede, c.anticipo, c.precio, c.precioRetoque,
+      c.servicio, c.disenoCejas, c.grosor, c.curvatura, c.tecnica,
+      c.longInterior, c.longCentro, c.longExterior, c.formaOjos,
+      c.alergias, c.alergiasDetalle, c.disenoNotas, c.nota, c.registradaEl,
     ]);
     const csv = [headers, ...rows]
       .map((row) => row.map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','))
