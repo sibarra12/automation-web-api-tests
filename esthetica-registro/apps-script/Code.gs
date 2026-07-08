@@ -13,7 +13,7 @@
 const SHEET_NAME = 'Clientas';
 const HEADERS = [
   'id', 'registradaEl', 'nombre', 'telefono', 'fechaTurno', 'hora', 'sede',
-  'anticipo', 'precio', 'precioRetoque', 'servicio', 'disenoCejas',
+  'anticipo', 'precio', 'precioRetoque', 'conocio', 'servicio', 'disenoCejas',
   'grosor', 'curvatura', 'tecnica', 'longInterior', 'longCentro', 'longExterior',
   'formaOjos', 'alergias', 'alergiasDetalle', 'disenoNotas', 'nota',
   'mappingLeft', 'mappingRight',

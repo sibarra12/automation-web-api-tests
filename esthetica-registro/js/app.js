@@ -20,6 +20,10 @@
   const nextMonthBtn = document.getElementById('nextMonthBtn');
   const todayBtn = document.getElementById('todayBtn');
 
+  const detailModal = document.getElementById('detailModal');
+  const detailContent = document.getElementById('detailContent');
+  const closeDetailModal = document.getElementById('closeDetailModal');
+
   const tabButtons = document.querySelectorAll('.tab-btn');
   const tabPanels = document.querySelectorAll('.tab-panel');
 
@@ -43,7 +47,7 @@
     const rx = w / 2 - 24;
     const ry = h / 3;
 
-    ctx.strokeStyle = '#d9b6c4';
+    ctx.strokeStyle = '#d9be86';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(cx - rx, cy);
@@ -87,7 +91,7 @@
       if (!drawing) return;
       evt.preventDefault();
       const p = canvasPoint(canvas, evt);
-      ctx.strokeStyle = '#d3477a';
+      ctx.strokeStyle = '#201f1c';
       ctx.lineWidth = 2.5;
       ctx.lineCap = 'round';
       ctx.beginPath();
@@ -170,6 +174,77 @@
     }[c]));
   }
 
+  const DETAIL_FIELDS = [
+    ['fechaTurno', 'Fecha del turno'],
+    ['hora', 'Hora'],
+    ['sede', 'Sede'],
+    ['precio', 'Precio'],
+    ['anticipo', 'Anticipo'],
+    ['precioRetoque', 'Precio de retoque'],
+    ['conocio', '¿Cómo nos conoció?'],
+    ['servicio', 'Servicio'],
+    ['disenoCejas', 'Diseño de cejas'],
+    ['grosor', 'Grosor'],
+    ['curvatura', 'Curvatura'],
+    ['tecnica', 'Técnica / Efecto'],
+    ['longInterior', 'Longitud interior'],
+    ['longCentro', 'Longitud centro'],
+    ['longExterior', 'Longitud exterior'],
+    ['formaOjos', 'Forma de ojos'],
+    ['alergias', 'Alergias'],
+    ['alergiasDetalle', 'Detalle de alergias'],
+    ['disenoNotas', 'Notas del mapping / diseño'],
+    ['nota', 'Nota'],
+  ];
+
+  function findClientById(id) {
+    return currentClients.find((c) => c.id === id);
+  }
+
+  function openDetail(client) {
+    if (!client) return;
+    const rows = DETAIL_FIELDS
+      .filter(([key]) => client[key])
+      .map(([key, label]) => `
+        <div class="detail-item${key === 'disenoNotas' || key === 'nota' ? ' full' : ''}">
+          <span class="detail-label">${label}</span>
+          <span class="detail-value">${escapeHtml(client[key])}</span>
+        </div>
+      `).join('');
+
+    const mappingImgs = [
+      client.mappingLeft ? `<img src="${client.mappingLeft}" title="Ojo izquierdo" data-full="${client.mappingLeft}">` : '',
+      client.mappingRight ? `<img src="${client.mappingRight}" title="Ojo derecho" data-full="${client.mappingRight}">` : '',
+    ].join('');
+
+    detailContent.innerHTML = `
+      <h3>${escapeHtml(client.nombre)}</h3>
+      <p class="muted">${escapeHtml(client.telefono)}</p>
+      <div class="detail-grid">${rows || '<p class="empty-msg">Sin datos adicionales.</p>'}</div>
+      ${mappingImgs ? `<span class="detail-label">Mapping</span><div class="detail-mapping-imgs">${mappingImgs}</div>` : ''}
+    `;
+    detailModal.classList.remove('hidden');
+  }
+
+  function closeDetail() {
+    detailModal.classList.add('hidden');
+  }
+
+  closeDetailModal.addEventListener('click', closeDetail);
+  detailModal.addEventListener('click', (e) => {
+    if (e.target === detailModal) closeDetail();
+  });
+  detailModal.addEventListener('click', (e) => {
+    const img = e.target.closest('.detail-mapping-imgs img');
+    if (img) {
+      const win = window.open();
+      if (win) win.document.write(`<img src="${img.dataset.full}" style="max-width:100%">`);
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDetail();
+  });
+
   function clearErrors() {
     form.querySelectorAll('.error').forEach((el) => { el.textContent = ''; });
   }
@@ -217,6 +292,7 @@
       anticipo: fd.get('anticipo'),
       precio: fd.get('precio'),
       precioRetoque: fd.get('precioRetoque'),
+      conocio: fd.get('conocio'),
       servicio: fd.get('servicio'),
       disenoCejas: fd.get('disenoCejas'),
       grosor: fd.get('grosor'),
@@ -310,6 +386,7 @@
       .sort((a, b) => new Date(b.registradaEl) - new Date(a.registradaEl))
       .forEach((c) => {
         const tr = document.createElement('tr');
+        tr.dataset.id = c.id;
         const registrada = new Date(c.registradaEl).toLocaleDateString('es-AR');
         const mappingCell = [
           c.mappingLeft ? `<img src="${c.mappingLeft}" class="mapping-thumb" title="Ojo izquierdo" data-full="${c.mappingLeft}" />` : '',
@@ -398,11 +475,14 @@
       dayDetail.innerHTML = `<h3>${label}</h3><p class="empty-msg">No hay turnos agendados este día.</p>`;
       return;
     }
+    const sorted = turnos.slice().sort((a, b) => String(a.hora || '99:99').localeCompare(String(b.hora || '99:99')));
+
     dayDetail.innerHTML = `
       <h3>${label} · ${turnos.length} turno${turnos.length > 1 ? 's' : ''}</h3>
       <ul class="day-turnos-list">
-        ${turnos.map((c) => `
-          <li>
+        ${sorted.map((c) => `
+          <li data-id="${c.id}">
+            ${c.hora ? `<span class="turno-hora">${escapeHtml(c.hora)}</span>` : ''}
             <strong>${escapeHtml(c.nombre)}</strong> — ${escapeHtml(c.servicio)}${c.tecnica ? ` (${escapeHtml(c.tecnica)})` : ''}<br>
             <span class="muted">${escapeHtml(c.telefono)}</span>
             ${c.mappingLeft || c.mappingRight ? `<br>${c.mappingLeft ? `<img src="${c.mappingLeft}" class="mapping-thumb" title="Ojo izquierdo">` : ''}${c.mappingRight ? `<img src="${c.mappingRight}" class="mapping-thumb" title="Ojo derecho">` : ''}` : ''}
@@ -411,6 +491,11 @@
       </ul>
     `;
   }
+
+  dayDetail.addEventListener('click', (e) => {
+    const li = e.target.closest('.day-turnos-list li[data-id]');
+    if (li) openDetail(findClientById(li.dataset.id));
+  });
 
   prevMonthBtn.addEventListener('click', () => {
     calendarDate.setMonth(calendarDate.getMonth() - 1);
@@ -436,19 +521,23 @@
       return;
     }
     const btn = e.target.closest('.row-delete');
-    if (!btn) return;
-    const id = btn.dataset.id;
-    btn.disabled = true;
-    try {
-      if (USE_REMOTE) {
-        await postRemote({ action: 'delete', id });
-      } else {
-        saveLocalClients(getLocalClients().filter((c) => c.id !== id));
+    if (btn) {
+      const id = btn.dataset.id;
+      btn.disabled = true;
+      try {
+        if (USE_REMOTE) {
+          await postRemote({ action: 'delete', id });
+        } else {
+          saveLocalClients(getLocalClients().filter((c) => c.id !== id));
+        }
+      } catch (err) {
+        alert('No se pudo borrar el registro en la planilla compartida. Intentá de nuevo.');
       }
-    } catch (err) {
-      alert('No se pudo borrar el registro en la planilla compartida. Intentá de nuevo.');
+      await renderTable();
+      return;
     }
-    await renderTable();
+    const row = e.target.closest('tr[data-id]');
+    if (row) openDetail(findClientById(row.dataset.id));
   });
 
   searchInput.addEventListener('input', renderTable);
@@ -474,13 +563,13 @@
       return;
     }
     const headers = [
-      'Nombre', 'Telefono', 'FechaTurno', 'Hora', 'Sede', 'Anticipo', 'Precio', 'PrecioRetoque',
+      'Nombre', 'Telefono', 'FechaTurno', 'Hora', 'Sede', 'Anticipo', 'Precio', 'PrecioRetoque', 'ComoConocio',
       'Servicio', 'DisenoCejas', 'Grosor', 'Curvatura', 'Tecnica',
       'LongInterior', 'LongCentro', 'LongExterior', 'FormaOjos',
       'Alergias', 'AlergiasDetalle', 'DisenoNotas', 'Nota', 'Registrada',
     ];
     const rows = currentClients.map((c) => [
-      c.nombre, c.telefono, c.fechaTurno, c.hora, c.sede, c.anticipo, c.precio, c.precioRetoque,
+      c.nombre, c.telefono, c.fechaTurno, c.hora, c.sede, c.anticipo, c.precio, c.precioRetoque, c.conocio,
       c.servicio, c.disenoCejas, c.grosor, c.curvatura, c.tecnica,
       c.longInterior, c.longCentro, c.longExterior, c.formaOjos,
       c.alergias, c.alergiasDetalle, c.disenoNotas, c.nota, c.registradaEl,
