@@ -152,7 +152,8 @@
       </table>
       <p id="emptyMsg" class="empty-msg">Todavía no hay clientas registradas.</p>
     </div>
-    <p class="note">⚠️ Los datos se guardan únicamente en este navegador (almacenamiento local). Si abrís la página desde otro dispositivo, no vas a ver estos registros.</p>
+    <p id="syncNote" class="note"></p>
+    <p class="note config-note">ℹ️ Si <code>SHEET_API_URL</code> está configurada (ver <code>js/config.js</code>), los registros se comparten entre dispositivos vía Google Sheets. Si no, se guardan solo en este navegador.</p>
   </section>
 
 </main>
@@ -161,6 +162,7 @@
   <p>Bella Piel Estética — Formulario de registro · Hecho con 💗</p>
 </footer>
 
+<script src="js/config.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

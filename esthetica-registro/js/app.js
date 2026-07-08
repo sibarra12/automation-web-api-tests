@@ -1,5 +1,7 @@
 (() => {
   const STORAGE_KEY = 'esteticaClientas';
+  const API_URL = window.SHEET_API_URL || '';
+  const USE_REMOTE = Boolean(API_URL);
 
   const form = document.getElementById('registroForm');
   const formMsg = document.getElementById('formMsg');
@@ -9,9 +11,12 @@
   const searchInput = document.getElementById('searchInput');
   const exportCsvBtn = document.getElementById('exportCsvBtn');
   const clearAllBtn = document.getElementById('clearAllBtn');
+  const syncNote = document.getElementById('syncNote');
 
   const tabButtons = document.querySelectorAll('.tab-btn');
   const tabPanels = document.querySelectorAll('.tab-panel');
+
+  let currentClients = [];
 
   tabButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -23,7 +28,7 @@
     });
   });
 
-  function getClients() {
+  function getLocalClients() {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
     } catch {
@@ -31,8 +36,24 @@
     }
   }
 
-  function saveClients(clients) {
+  function saveLocalClients(clients) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(clients));
+  }
+
+  async function fetchRemoteClients() {
+    const res = await fetch(API_URL, { method: 'GET' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  }
+
+  async function postRemote(payload) {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
   }
 
   function escapeHtml(str) {
@@ -75,7 +96,7 @@
     return valid;
   }
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     clearErrors();
     formMsg.textContent = '';
@@ -104,30 +125,59 @@
       return;
     }
 
-    const clients = getClients();
-    clients.push(data);
-    saveClients(clients);
+    const submitBtn = form.querySelector('.btn-primary');
+    submitBtn.disabled = true;
 
-    form.reset();
-    formMsg.textContent = `¡Gracias, ${data.nombre}! Tu registro fue guardado.`;
-    formMsg.classList.add('success');
-    renderTable();
+    try {
+      if (USE_REMOTE) {
+        await postRemote(data);
+      } else {
+        const clients = getLocalClients();
+        clients.push(data);
+        saveLocalClients(clients);
+      }
+      form.reset();
+      formMsg.textContent = `¡Gracias, ${data.nombre}! Tu registro fue guardado.`;
+      formMsg.classList.add('success');
+      await renderTable();
+    } catch (err) {
+      const clients = getLocalClients();
+      clients.push(data);
+      saveLocalClients(clients);
+      form.reset();
+      formMsg.textContent = 'No se pudo conectar con la planilla; tu registro quedó guardado localmente en este navegador.';
+      formMsg.classList.add('error');
+    } finally {
+      submitBtn.disabled = false;
+    }
   });
 
-  function renderTable() {
-    const clients = getClients();
+  async function loadClients() {
+    if (!USE_REMOTE) return getLocalClients();
+    try {
+      const remote = await fetchRemoteClients();
+      if (syncNote) syncNote.textContent = '';
+      return remote;
+    } catch (err) {
+      if (syncNote) syncNote.textContent = '⚠️ No se pudo conectar con la planilla compartida; mostrando datos guardados en este navegador.';
+      return getLocalClients();
+    }
+  }
+
+  async function renderTable() {
+    currentClients = await loadClients();
     const query = (searchInput.value || '').toLowerCase().trim();
-    const filtered = clients.filter((c) => {
+    const filtered = currentClients.filter((c) => {
       if (!query) return true;
-      return c.nombre.toLowerCase().includes(query) || c.telefono.toLowerCase().includes(query);
+      return String(c.nombre).toLowerCase().includes(query) || String(c.telefono).toLowerCase().includes(query);
     });
 
-    countBadge.textContent = clients.length;
+    countBadge.textContent = currentClients.length;
 
     tableBody.innerHTML = '';
     if (filtered.length === 0) {
       emptyMsg.style.display = 'block';
-      emptyMsg.textContent = clients.length === 0
+      emptyMsg.textContent = currentClients.length === 0
         ? 'Todavía no hay clientas registradas.'
         : 'No se encontraron resultados para la búsqueda.';
       return;
@@ -153,33 +203,47 @@
       });
   }
 
-  tableBody.addEventListener('click', (e) => {
+  tableBody.addEventListener('click', async (e) => {
     const btn = e.target.closest('.row-delete');
     if (!btn) return;
     const id = btn.dataset.id;
-    const clients = getClients().filter((c) => c.id !== id);
-    saveClients(clients);
-    renderTable();
+    btn.disabled = true;
+    try {
+      if (USE_REMOTE) {
+        await postRemote({ action: 'delete', id });
+      } else {
+        saveLocalClients(getLocalClients().filter((c) => c.id !== id));
+      }
+    } catch (err) {
+      alert('No se pudo borrar el registro en la planilla compartida. Intentá de nuevo.');
+    }
+    await renderTable();
   });
 
   searchInput.addEventListener('input', renderTable);
 
-  clearAllBtn.addEventListener('click', () => {
-    if (getClients().length === 0) return;
-    if (confirm('¿Seguro que querés borrar todos los registros? Esta acción no se puede deshacer.')) {
-      saveClients([]);
-      renderTable();
+  clearAllBtn.addEventListener('click', async () => {
+    if (currentClients.length === 0) return;
+    if (!confirm('¿Seguro que querés borrar todos los registros? Esta acción no se puede deshacer.')) return;
+    try {
+      if (USE_REMOTE) {
+        await postRemote({ action: 'clearAll' });
+      } else {
+        saveLocalClients([]);
+      }
+    } catch (err) {
+      alert('No se pudo borrar la planilla compartida. Intentá de nuevo.');
     }
+    await renderTable();
   });
 
   exportCsvBtn.addEventListener('click', () => {
-    const clients = getClients();
-    if (clients.length === 0) {
+    if (currentClients.length === 0) {
       alert('No hay clientas registradas para exportar.');
       return;
     }
     const headers = ['Nombre', 'Telefono', 'Email', 'Nacimiento', 'Direccion', 'TipoPiel', 'Alergias', 'Tratamiento', 'FechaTurno', 'ComoConocio', 'Registrada'];
-    const rows = clients.map((c) => [
+    const rows = currentClients.map((c) => [
       c.nombre, c.telefono, c.email, c.nacimiento, c.direccion,
       c.tipoPiel, c.alergias, c.tratamiento, c.fechaTurno, c.conocio, c.registradaEl,
     ]);
