@@ -27,6 +27,104 @@
   let calendarDate = new Date();
   let selectedDay = null;
 
+  const mapCanvasLeft = document.getElementById('mapCanvasLeft');
+  const mapCanvasRight = document.getElementById('mapCanvasRight');
+
+  function drawEyeGuide(canvas) {
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, w, h);
+
+    const cx = w / 2;
+    const cy = h / 2 + 6;
+    const rx = w / 2 - 24;
+    const ry = h / 3;
+
+    ctx.strokeStyle = '#d9b6c4';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx - rx, cy);
+    ctx.quadraticCurveTo(cx, cy - ry, cx + rx, cy);
+    ctx.quadraticCurveTo(cx, cy + ry * 0.55, cx - rx, cy);
+    ctx.stroke();
+
+    for (let i = -4; i <= 4; i++) {
+      const t = i / 4;
+      const x = cx + t * rx;
+      const topY = cy - Math.sqrt(Math.max(0, 1 - t * t)) * ry;
+      ctx.beginPath();
+      ctx.moveTo(x, topY + 5);
+      ctx.lineTo(x, topY - 6);
+      ctx.stroke();
+    }
+  }
+
+  function canvasPoint(canvas, evt) {
+    const rect = canvas.getBoundingClientRect();
+    const src = evt.touches && evt.touches.length ? evt.touches[0] : evt;
+    return {
+      x: (src.clientX - rect.left) * (canvas.width / rect.width),
+      y: (src.clientY - rect.top) * (canvas.height / rect.height),
+    };
+  }
+
+  function setupMappingCanvas(canvas) {
+    if (!canvas) return;
+    drawEyeGuide(canvas);
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let last = null;
+
+    const start = (evt) => {
+      evt.preventDefault();
+      drawing = true;
+      last = canvasPoint(canvas, evt);
+    };
+    const move = (evt) => {
+      if (!drawing) return;
+      evt.preventDefault();
+      const p = canvasPoint(canvas, evt);
+      ctx.strokeStyle = '#d3477a';
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(last.x, last.y);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+      last = p;
+    };
+    const end = () => { drawing = false; };
+
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', end);
+    canvas.addEventListener('touchstart', start, { passive: false });
+    canvas.addEventListener('touchmove', move, { passive: false });
+    canvas.addEventListener('touchend', end);
+  }
+
+  setupMappingCanvas(mapCanvasLeft);
+  setupMappingCanvas(mapCanvasRight);
+
+  const blankMappingLeft = mapCanvasLeft ? mapCanvasLeft.toDataURL('image/png') : '';
+  const blankMappingRight = mapCanvasRight ? mapCanvasRight.toDataURL('image/png') : '';
+
+  function mappingDataUrl(canvas, blank) {
+    if (!canvas) return '';
+    const url = canvas.toDataURL('image/png');
+    return url === blank ? '' : url;
+  }
+
+  document.querySelectorAll('.mapping-clear-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const canvas = document.getElementById(btn.dataset.target);
+      drawEyeGuide(canvas);
+    });
+  });
+
   tabButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       tabButtons.forEach((b) => b.classList.remove('active'));
@@ -132,6 +230,8 @@
       alergiasDetalle: fd.get('alergiasDetalle').trim(),
       disenoNotas: fd.get('disenoNotas').trim(),
       nota: fd.get('nota').trim(),
+      mappingLeft: mappingDataUrl(mapCanvasLeft, blankMappingLeft),
+      mappingRight: mappingDataUrl(mapCanvasRight, blankMappingRight),
       consentimiento: fd.get('consentimiento') === 'on',
       registradaEl: new Date().toISOString(),
     };
@@ -154,6 +254,8 @@
         saveLocalClients(clients);
       }
       form.reset();
+      if (mapCanvasLeft) drawEyeGuide(mapCanvasLeft);
+      if (mapCanvasRight) drawEyeGuide(mapCanvasRight);
       formMsg.textContent = `¡Gracias, ${data.nombre}! Tu registro fue guardado.`;
       formMsg.classList.add('success');
       await renderTable();
@@ -162,6 +264,8 @@
       clients.push(data);
       saveLocalClients(clients);
       form.reset();
+      if (mapCanvasLeft) drawEyeGuide(mapCanvasLeft);
+      if (mapCanvasRight) drawEyeGuide(mapCanvasRight);
       formMsg.textContent = 'No se pudo conectar con la planilla; tu registro quedó guardado localmente en este navegador.';
       formMsg.classList.add('error');
     } finally {
@@ -207,12 +311,17 @@
       .forEach((c) => {
         const tr = document.createElement('tr');
         const registrada = new Date(c.registradaEl).toLocaleDateString('es-AR');
+        const mappingCell = [
+          c.mappingLeft ? `<img src="${c.mappingLeft}" class="mapping-thumb" title="Ojo izquierdo" data-full="${c.mappingLeft}" />` : '',
+          c.mappingRight ? `<img src="${c.mappingRight}" class="mapping-thumb" title="Ojo derecho" data-full="${c.mappingRight}" />` : '',
+        ].join('') || '—';
         tr.innerHTML = `
           <td>${escapeHtml(c.nombre)}</td>
           <td>${escapeHtml(c.telefono)}</td>
           <td>${escapeHtml(c.servicio) || '—'}</td>
           <td>${escapeHtml(c.tecnica) || '—'}</td>
           <td>${escapeHtml(c.fechaTurno) || '—'}</td>
+          <td>${mappingCell}</td>
           <td>${registrada}</td>
           <td><button class="row-delete" title="Eliminar" data-id="${c.id}">🗑️</button></td>
         `;
@@ -296,6 +405,7 @@
           <li>
             <strong>${escapeHtml(c.nombre)}</strong> — ${escapeHtml(c.servicio)}${c.tecnica ? ` (${escapeHtml(c.tecnica)})` : ''}<br>
             <span class="muted">${escapeHtml(c.telefono)}</span>
+            ${c.mappingLeft || c.mappingRight ? `<br>${c.mappingLeft ? `<img src="${c.mappingLeft}" class="mapping-thumb" title="Ojo izquierdo">` : ''}${c.mappingRight ? `<img src="${c.mappingRight}" class="mapping-thumb" title="Ojo derecho">` : ''}` : ''}
           </li>
         `).join('')}
       </ul>
@@ -319,6 +429,12 @@
   });
 
   tableBody.addEventListener('click', async (e) => {
+    const thumb = e.target.closest('.mapping-thumb');
+    if (thumb) {
+      const win = window.open();
+      if (win) win.document.write(`<img src="${thumb.dataset.full}" style="max-width:100%">`);
+      return;
+    }
     const btn = e.target.closest('.row-delete');
     if (!btn) return;
     const id = btn.dataset.id;

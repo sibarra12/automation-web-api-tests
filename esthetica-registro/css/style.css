@@ -45,7 +45,13 @@ h1, h2, .brand-name {
 }
 
 .brand { display: flex; align-items: center; gap: 10px; font-size: 1.3rem; font-weight: 700; color: var(--rose-700); }
-.brand-icon { font-size: 1.6rem; }
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
 .brand-name em { font-style: normal; color: var(--gold); }
 
 .tabs { display: flex; gap: 8px; }
@@ -224,6 +230,48 @@ tbody tr:hover { background: var(--rose-50); }
   color: var(--ink-soft);
   text-align: center;
   margin-top: 14px;
+}
+
+.mapping-canvases {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.mapping-canvas-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.mapping-eye-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.mapping-canvas {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  cursor: crosshair;
+  touch-action: none;
+  max-width: 100%;
+}
+
+.mapping-clear-btn {
+  padding: 6px 14px;
+  font-size: 0.78rem;
+}
+
+.mapping-thumb {
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  vertical-align: middle;
+  margin-right: 4px;
 }
 
 .calendar-card {

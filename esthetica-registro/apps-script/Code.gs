@@ -16,6 +16,7 @@ const HEADERS = [
   'anticipo', 'precio', 'precioRetoque', 'servicio', 'disenoCejas',
   'grosor', 'curvatura', 'tecnica', 'longInterior', 'longCentro', 'longExterior',
   'formaOjos', 'alergias', 'alergiasDetalle', 'disenoNotas', 'nota',
+  'mappingLeft', 'mappingRight',
 ];
 
 function getSheet_() {
