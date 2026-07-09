@@ -1,7 +1,13 @@
 (() => {
   const STORAGE_KEY = 'esteticaClientas';
+  const TOKEN_KEY = 'esteticaAdminToken';
   const API_URL = window.SHEET_API_URL || '';
   const USE_REMOTE = Boolean(API_URL);
+
+  function getToken() { return sessionStorage.getItem(TOKEN_KEY); }
+  function setToken(t) { sessionStorage.setItem(TOKEN_KEY, t); }
+  function clearToken() { sessionStorage.removeItem(TOKEN_KEY); }
+  function isLoggedIn() { return Boolean(getToken()); }
 
   const form = document.getElementById('registroForm');
   const formMsg = document.getElementById('formMsg');
@@ -23,6 +29,15 @@
   const detailModal = document.getElementById('detailModal');
   const detailContent = document.getElementById('detailContent');
   const closeDetailModal = document.getElementById('closeDetailModal');
+
+  const loginModal = document.getElementById('loginModal');
+  const loginForm = document.getElementById('loginForm');
+  const loginError = document.getElementById('loginError');
+  const closeLoginModal = document.getElementById('closeLoginModal');
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const tabListBtn = document.getElementById('tabListBtn');
+  const tabCalendarBtn = document.getElementById('tabCalendarBtn');
 
   const tabButtons = document.querySelectorAll('.tab-btn');
   const tabPanels = document.querySelectorAll('.tab-panel');
@@ -140,6 +155,73 @@
     });
   });
 
+  function goToTab(tabName) {
+    const btn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
+    if (btn) btn.click();
+  }
+
+  function applyAuthState() {
+    const loggedIn = isLoggedIn();
+    tabListBtn.hidden = !loggedIn;
+    tabCalendarBtn.hidden = !loggedIn;
+    loginBtn.hidden = loggedIn;
+    logoutBtn.hidden = !loggedIn;
+
+    const activeBtn = document.querySelector('.tab-btn.active');
+    const onRestrictedTab = activeBtn && (activeBtn.dataset.tab === 'list' || activeBtn.dataset.tab === 'calendar');
+    if (!loggedIn && onRestrictedTab) goToTab('form');
+  }
+
+  function openLogin() {
+    loginError.textContent = '';
+    loginForm.reset();
+    loginModal.classList.remove('hidden');
+  }
+
+  function closeLogin() {
+    loginModal.classList.add('hidden');
+  }
+
+  loginBtn.addEventListener('click', openLogin);
+  closeLoginModal.addEventListener('click', closeLogin);
+  loginModal.addEventListener('click', (e) => {
+    if (e.target === loginModal) closeLogin();
+  });
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loginError.textContent = '';
+    const fd = new FormData(loginForm);
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    try {
+      const result = await postRemote({
+        action: 'login',
+        username: fd.get('username'),
+        password: fd.get('password'),
+      });
+      if (result.ok) {
+        setToken(result.token);
+        closeLogin();
+        applyAuthState();
+        goToTab('list');
+      } else if (result.error === 'locked') {
+        loginError.textContent = 'Demasiados intentos fallidos. Probá de nuevo en unos minutos.';
+      } else {
+        loginError.textContent = 'Usuario o contraseña incorrectos.';
+      }
+    } catch (err) {
+      loginError.textContent = 'No se pudo conectar. Intentá de nuevo.';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    clearToken();
+    applyAuthState();
+  });
+
   function getLocalClients() {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -153,9 +235,18 @@
   }
 
   async function fetchRemoteClients() {
-    const res = await fetch(API_URL, { method: 'GET' });
+    const url = `${API_URL}?token=${encodeURIComponent(getToken() || '')}`;
+    const res = await fetch(url, { method: 'GET' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json();
+    const data = await res.json();
+    if (!Array.isArray(data)) {
+      if (data && data.error === 'unauthorized') {
+        clearToken();
+        applyAuthState();
+      }
+      throw new Error((data && data.error) || 'unauthorized');
+    }
+    return data;
   }
 
   async function postRemote(payload) {
@@ -242,7 +333,10 @@
     }
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeDetail();
+    if (e.key === 'Escape') {
+      closeDetail();
+      closeLogin();
+    }
   });
 
   function clearErrors() {
@@ -323,7 +417,14 @@
 
     try {
       if (USE_REMOTE) {
-        await postRemote(data);
+        const result = await postRemote(data);
+        if (result && result.ok === false) {
+          formMsg.textContent = result.error === 'conflict'
+            ? (result.message || 'Ese horario ya está ocupado. Elegí otro horario.')
+            : 'No se pudo registrar el turno. Intentá de nuevo o contactanos directamente.';
+          formMsg.classList.add('error');
+          return;
+        }
       } else {
         const clients = getLocalClients();
         clients.push(data);
@@ -334,7 +435,7 @@
       if (mapCanvasRight) drawEyeGuide(mapCanvasRight);
       formMsg.textContent = `¡Gracias, ${data.nombre}! Tu registro fue guardado.`;
       formMsg.classList.add('success');
-      await renderTable();
+      if (isLoggedIn()) await renderTable();
     } catch (err) {
       const clients = getLocalClients();
       clients.push(data);
@@ -526,7 +627,16 @@
       btn.disabled = true;
       try {
         if (USE_REMOTE) {
-          await postRemote({ action: 'delete', id });
+          const result = await postRemote({ action: 'delete', id, token: getToken() });
+          if (result && result.ok === false) {
+            if (result.error === 'unauthorized') {
+              clearToken();
+              applyAuthState();
+              alert('Tu sesión expiró. Iniciá sesión de nuevo.');
+            } else {
+              alert('No se pudo borrar el registro. Intentá de nuevo.');
+            }
+          }
         } else {
           saveLocalClients(getLocalClients().filter((c) => c.id !== id));
         }
@@ -547,7 +657,16 @@
     if (!confirm('¿Seguro que querés borrar todos los registros? Esta acción no se puede deshacer.')) return;
     try {
       if (USE_REMOTE) {
-        await postRemote({ action: 'clearAll' });
+        const result = await postRemote({ action: 'clearAll', token: getToken() });
+        if (result && result.ok === false) {
+          if (result.error === 'unauthorized') {
+            clearToken();
+            applyAuthState();
+            alert('Tu sesión expiró. Iniciá sesión de nuevo.');
+          } else {
+            alert('No se pudo borrar la planilla compartida. Intentá de nuevo.');
+          }
+        }
       } else {
         saveLocalClients([]);
       }
@@ -586,5 +705,6 @@
     URL.revokeObjectURL(url);
   });
 
-  renderTable();
+  applyAuthState();
+  if (isLoggedIn()) renderTable();
 })();

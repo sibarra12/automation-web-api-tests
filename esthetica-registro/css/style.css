@@ -52,6 +52,9 @@ h1, h2, .brand-name {
 }
 .brand-name em { font-style: normal; color: var(--gold); }
 
+.auth-controls { display: flex; align-items: center; }
+.auth-controls .btn-secondary { padding: 8px 18px; font-size: 0.85rem; }
+
 .tabs { display: flex; gap: 8px; }
 .tab-btn {
   border: none;
