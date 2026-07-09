@@ -20,9 +20,13 @@
   </div>
   <nav class="tabs">
     <button class="tab-btn active" data-tab="form">Registro</button>
-    <button class="tab-btn" data-tab="list">Clientas (<span id="countBadge">0</span>)</button>
-    <button class="tab-btn" data-tab="calendar">Calendario</button>
+    <button class="tab-btn" data-tab="list" id="tabListBtn" hidden>Clientas (<span id="countBadge">0</span>)</button>
+    <button class="tab-btn" data-tab="calendar" id="tabCalendarBtn" hidden>Calendario</button>
   </nav>
+  <div class="auth-controls">
+    <button id="loginBtn" class="btn-secondary" type="button">Iniciar sesión</button>
+    <button id="logoutBtn" class="btn-secondary" type="button" hidden>Cerrar sesión</button>
+  </div>
 </header>
 
 <main class="container">
@@ -306,6 +310,25 @@
   <div class="modal-card">
     <button id="closeDetailModal" class="modal-close" type="button" aria-label="Cerrar">✕</button>
     <div id="detailContent"></div>
+  </div>
+</div>
+
+<div id="loginModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <button id="closeLoginModal" class="modal-close" type="button" aria-label="Cerrar">✕</button>
+    <h3>Iniciar sesión</h3>
+    <form id="loginForm">
+      <div class="field">
+        <label for="loginUsername">Usuario</label>
+        <input type="text" id="loginUsername" name="username" required autocomplete="username" />
+      </div>
+      <div class="field">
+        <label for="loginPassword">Contraseña</label>
+        <input type="password" id="loginPassword" name="password" required autocomplete="current-password" />
+      </div>
+      <p id="loginError" class="form-msg error"></p>
+      <button type="submit" class="btn-primary">Ingresar</button>
+    </form>
   </div>
 </div>
 
